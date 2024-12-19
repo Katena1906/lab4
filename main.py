@@ -33,50 +33,50 @@ def start(message):
                                       "a - Аниме,\n"
                                       "fd - Фэндом,\n"
                                       "ma - Манга")
+    bot.register_next_step_handler(message, process_board)
 
-
-@bot.message_handler(func=lambda message: True)
-def handle_input(message):
+def process_board(message):
     user_id = message.chat.id
     user_input = message.text.strip().lower()
 
-    if user_id not in user_data:
-        if user_input in boards:
-            user_data[user_id] = {'argument': user_input, 'step': 'function_choice'}
-            bot.send_message(user_id, "Данные приняты. Теперь выбери, что ты хочешь:\n"
-                                      "1. Посмотреть данные по самому популярному треду\n"
-                                      "2. Посмотреть данные по самому высокорейтинговому треду\n"
-                                      "3. Посмотреть последний тред\n"
-                                      "4. Посмотреть рандомный тред")
-        else:
-            bot.send_message(user_id, "Ты ввел неверную доску! Пожалуйста, выбери из списка доступных досок.")
-            bot.send_message(user_id, "Выбери доску:\n" + '\n'.join([f"/{board}" for board in boards]))
-            return
+    if user_input in boards:
+        user_data[user_id] = {'board': user_input, 'step': 'waiting_for_command'}
+        bot.send_message(user_id, "Данные приняты. Теперь выбери, что ты хочешь:\n"
+                                  "1. Посмотреть данные по самому популярному треду\n"
+                                  "2. Посмотреть данные по самому высокорейтинговому треду\n"
+                                  "3. Посмотреть последний тред\n"
+                                  "4. Посмотреть рандомный тред")
+        bot.register_next_step_handler(message, process_command)
+    else:
+        bot.send_message(user_id, "Ты ввел неверную доску! Пожалуйста, выбери из списка доступных досок.")
+        bot.register_next_step_handler(message, process_board)
 
-    elif user_data[user_id]['step'] == 'function_choice':
-        if user_input in commands:
+def process_command(message):
+    user_id = message.chat.id
+    user_input = message.text.strip()
 
-            bot.send_message(user_id, f"Ты выбрал: {commands[user_input]}")
-
-            if user_input == '1':
-                # Функция для популярного треда
-                pass
-            elif user_input == '2':
-                # Функция для высокорейтингового треда
-                pass
-            elif user_input == '3':
-                # Функция для последнего треда
-                pass
-            elif user_input == '4':
-                # Функция для рандомного треда
-                pass
-        else:
-            bot.send_message(user_id, "Пожалуйста, выбери правильную команду:\n"
-                                      "1. Посмотреть данные по самому популярному треду\n"
-                                      "2. Посмотреть данные по самому высокорейтинговому треду\n"
-                                      "3. Посмотреть последний тред\n"
-                                      "4. Посмотреть рандомный тред")
-
+    if user_input in commands:
+        bot.send_message(user_id, f"Ты выбрал: {commands[user_input]}")
+        # Выполнение соответствующей функции в зависимости от команды
+        if user_input == '1':
+            # Функция для популярного треда
+            pass
+        elif user_input == '2':
+            # Функция для высокорейтингового треда
+            pass
+        elif user_input == '3':
+            # Функция для последнего треда
+            pass
+        elif user_input == '4':
+            # Функция для рандомного треда
+            pass
+    else:
+        bot.send_message(user_id, "Пожалуйста, выбери правильную команду:\n"
+                                  "1. Посмотреть данные по самому популярному треду\n"
+                                  "2. Посмотреть данные по самому высокорейтинговому треду\n"
+                                  "3. Посмотреть последний тред\n"
+                                  "4. Посмотреть рандомный тред")
+        bot.register_next_step_handler(message, process_command)
 bot.polling()
 
 
