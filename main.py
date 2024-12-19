@@ -1,12 +1,12 @@
 
 import os
 import telebot
-from jsonsketch import get_most_popular_thread
+from jsonsketch import get_most_popular_thread, get_most_rating_thread
 
 TOKEN = os.getenv('TOKEN')
 
 
-TOKENB='7594677312:AAHbPxHvd5ZkBW7hwqzm4dJmssvbnQQEgMM'
+TOKENB=''
 
 bot = telebot.TeleBot(TOKENB)
 user_data={}
@@ -70,7 +70,17 @@ def process_command(message):
                 bot.send_message(user_id, "Не удалось получить данные о самом популярном треде.")
         elif user_input == '2':
             # Функция для высокорейтингового треда
-            pass
+            most_rating_thread = get_most_rating_thread(board)
+            if most_rating_thread:
+                bot.send_message(user_id,
+                                 f"Самый популярный тред на доске {board}:\n"
+                                 f"Заголовок: {most_rating_thread['subject']}\n"
+                                 f"Количество постов: {most_rating_thread['posts_count']}\n"
+                                 f"Рейтинг: {most_rating_thread['score']}\n"
+                                 f"Комментарий: {most_rating_thread['comment']}\n"
+                                 f"Ссылка: {most_rating_thread['link']}")
+            else:
+                bot.send_message(user_id, "Не удалось получить данные о самом рейтинговом треде.")
         elif user_input == '3':
             # Функция для последнего треда
             pass
