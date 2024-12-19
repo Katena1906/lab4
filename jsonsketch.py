@@ -29,15 +29,3 @@ def get_most_popular_thread(board):
         return None
 
 
-# Пример использования
-board = "b"  # Название борды например, "b"
-popular_thread = get_most_popular_thread(board)
-
-if popular_thread:
-    print("Самый популярный тред:")
-    print(f"ID: {popular_thread['id']}")
-    print(f"Заголовок: {popular_thread['subject']}")
-    print(f"Количество постов: {popular_thread['posts_count']}")
-    print(f"Рейтинг: {popular_thread['score']}")
-    print(f"Комментарий: {popular_thread['comment']}")
-    print(f"Ссылка: {popular_thread['link']}")
