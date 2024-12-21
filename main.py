@@ -1,11 +1,8 @@
-
 import os
 import telebot
-from jsonsketch import get_most_popular_thread, get_most_rating_thread
+from jsonsketch import get_most_popular_thread, get_most_rating_thread, get_most_last_thread
 
 TOKEN = os.getenv('TOKEN')
-
-
 TOKENB=''
 
 bot = telebot.TeleBot(TOKENB)
@@ -51,6 +48,7 @@ def process_command(message):
     user_id = message.chat.id
     user_input = message.text.strip()
 
+    #
     board = user_data[user_id]['board']
     if user_input in commands:
         bot.send_message(user_id, f"Ты выбрал: {commands[user_input]}")
@@ -64,7 +62,6 @@ def process_command(message):
                                          f"Заголовок: {most_popular_thread['subject']}\n" 
                                          f"Количество постов: {most_popular_thread['posts_count']}\n" 
                                          f"Рейтинг: {most_popular_thread['score']}\n" 
-                                         f"Комментарий: {most_popular_thread['comment']}\n" 
                                          f"Ссылка: {most_popular_thread['link']}")
             else:
                 bot.send_message(user_id, "Не удалось получить данные о самом популярном треде.")
@@ -83,6 +80,17 @@ def process_command(message):
                 bot.send_message(user_id, "Не удалось получить данные о самом рейтинговом треде.")
         elif user_input == '3':
             # Функция для последнего треда
+            most_last_thread = get_most_last_thread(board)
+            if most_last_thread:
+                bot.send_message(user_id,
+                                 f"Самый поcледний тред на доске {board}:\n"
+                                 f"Заголовок: {most_last_thread['subject']}\n"
+                                 f"Количество постов: {most_last_thread['posts_count']}\n"
+                                 f"Рейтинг: {most_last_thread['score']}\n"
+                                 f"Комментарий: {most_last_thread['comment']}\n"
+                                 f"Ссылка: {most_last_thread['link']}")
+            else:
+                bot.send_message(user_id, "Не удалось получить данные о последнем треде.")
             pass
         elif user_input == '4':
             # Функция для рандомного треда
