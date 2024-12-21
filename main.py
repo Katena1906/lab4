@@ -1,6 +1,6 @@
 import os
 import telebot
-from jsonsketch import get_most_popular_thread, get_most_rating_thread, get_most_last_thread
+from jsonsketch import get_most_popular_thread, get_most_rating_thread, get_most_last_thread, get_random_thread
 
 TOKEN = os.getenv('TOKEN')
 TOKENB=''
@@ -14,7 +14,8 @@ boards = ['2d', 'aa', 'cute', 'es', 'a', 'fd', 'ma']
 commands = {
     '1': "Посмотреть данные по самому популярному треду",
     '2': "Посмотреть данные по самому высокорейтинговому треду",
-    '3': "Посмотреть последний тред"}
+    '3': "Посмотреть последний тред",
+    '4': "Посмотреть случайный тред"}
 
 
 @bot.message_handler(commands=['start'])
@@ -38,7 +39,8 @@ def process_board(message):
         bot.send_message(user_id, "Данные приняты. Теперь выбери, что ты хочешь:\n"
                                   "1. Посмотреть данные по самому популярному треду\n"
                                   "2. Посмотреть данные по самому высокорейтинговому треду\n"
-                                  "3. Посмотреть последний тред")
+                                  "3. Посмотреть последний тред\n"
+                                  "4. Посмотреть случайный тред")
         bot.register_next_step_handler(message, process_command)
     else:
         bot.send_message(user_id, "Ты ввел неверную доску! Пожалуйста, выбери из списка доступных досок.")
@@ -91,15 +93,25 @@ def process_command(message):
                                  f"Ссылка: {most_last_thread['link']}")
             else:
                 bot.send_message(user_id, "Не удалось получить данные о последнем треде.")
-            pass
         elif user_input == '4':
             # Функция для рандомного треда
-            pass
+            random_thread = get_random_thread(board)
+            if random_thread:
+                bot.send_message(user_id,
+                                 f"Случайный тред на доске {board}:\n"
+                                 f"Заголовок: {random_thread['subject']}\n"
+                                 f"Количество постов: {random_thread['posts_count']}\n"
+                                 f"Рейтинг: {random_thread['score']}\n"
+                                 f"Комментарий: {random_thread['comment']}\n"
+                                 f"Ссылка: {random_thread['link']}")
+            else:
+                bot.send_message(user_id, "Не удалось получить данные о случайном треде треде.")
     else:
         bot.send_message(user_id, "Пожалуйста, выбери правильную команду:\n"
                                   "1. Посмотреть данные по самому популярному треду\n"
                                   "2. Посмотреть данные по самому высокорейтинговому треду\n"
-                                  "3. Посмотреть последний тред")
+                                  "3. Посмотреть последний тред\n"
+                                  "4. Посмотреть случайный тред")
         bot.register_next_step_handler(message, process_command)
 bot.polling()
 
